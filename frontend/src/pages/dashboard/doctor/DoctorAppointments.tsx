@@ -119,6 +119,37 @@ const appointmentsData = [
     notes: 'Patient ne s\'est pas présenté sans prévenir',
     isNewPatient: false,
   },
+  // Upcoming appointments (à venir)
+  {
+    id: '9',
+    patientName: 'Imen Jaziri',
+    patientPhone: '+216 21 654 987',
+    date: new Date(2025, 4, 31, 10, 0), // Future appointment
+    status: 'confirmed',
+    reason: 'Consultation nutrition',
+    notes: '',
+    isNewPatient: true,
+  },
+  {
+    id: '10',
+    patientName: 'Walid Gharbi',
+    patientPhone: '+216 20 123 321',
+    date: new Date(2025, 5, 1, 9, 30), // Future appointment
+    status: 'confirmed',
+    reason: 'Bilan sanguin',
+    notes: '',
+    isNewPatient: false,
+  },
+  {
+    id: '11',
+    patientName: 'Sonia Messaoudi',
+    patientPhone: '+216 29 888 777',
+    date: new Date(2025, 5, 2, 11, 0), // Future appointment
+    status: 'confirmed',
+    reason: 'Consultation générale',
+    notes: '',
+    isNewPatient: false,
+  },
 ];
 
 const DoctorAppointments = () => {

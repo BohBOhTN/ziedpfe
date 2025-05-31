@@ -66,6 +66,31 @@ const appointments = [
     status: 'confirmed',
     location: '3 Rue de France, Monastir',
   },
+  // Upcoming appointments (à venir)
+  {
+    id: '6',
+    doctorName: 'Dr. Hichem Ben Romdhane',
+    doctorSpecialty: 'Neurologie',
+    date: new Date(2025, 4, 31, 15, 0), // Future appointment
+    status: 'confirmed',
+    location: '12 Rue de Marseille, Tunis',
+  },
+  {
+    id: '7',
+    doctorName: 'Dr. Sana Chikhaoui',
+    doctorSpecialty: 'Gynécologie',
+    date: new Date(2025, 5, 1, 11, 30), // Future appointment
+    status: 'pending',
+    location: '7 Avenue de la Liberté, Sfax',
+  },
+  {
+    id: '8',
+    doctorName: 'Dr. Walid Gharbi',
+    doctorSpecialty: 'Biologie',
+    date: new Date(2025, 5, 2, 9, 0), // Future appointment
+    status: 'confirmed',
+    location: '5 Rue Ibn Sina, Tunis',
+  },
 ];
 
 const PatientAppointments = () => {
