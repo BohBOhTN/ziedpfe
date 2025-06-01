@@ -150,9 +150,9 @@ const PatientAppointments = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <Badge variant="outline" className="bg-success/20 text-success border-success">Confirmé</Badge>;
+        return <Badge variant="outline" className="bg-green-600/20 text-green-600 border-green-600">Confirmé</Badge>;
       case 'pending':
-        return <Badge variant="outline" className="bg-warning/20 text-warning border-warning">En attente</Badge>;
+        return <Badge variant="outline" className="bg-blue-600/20 text-blue-600 border-blue-600">En attente</Badge>; 
       case 'completed':
         return <Badge variant="outline" className="bg-primary/20 text-primary border-primary">Effectué</Badge>;
       case 'cancelled':

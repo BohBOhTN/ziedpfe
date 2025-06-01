@@ -225,13 +225,13 @@ const DoctorAppointments = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return <Badge variant="outline\" className="bg-success/20 text-success border-success">Confirmé</Badge>;
+        return <Badge variant="outline" className="bg-green-600/20 text-green-600 border-green-600">Confirmé</Badge>;
       case 'completed':
         return <Badge variant="outline" className="bg-primary/20 text-primary border-primary">Effectué</Badge>;
       case 'cancelled':
         return <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive">Annulé</Badge>;
       case 'no-show':
-        return <Badge variant="outline" className="bg-warning/20 text-warning border-warning">Absent</Badge>;
+        return <Badge variant="outline" className="bg-yellow-600/20 text-yellow-600 border-yellow-600">Absent</Badge>;
       default:
         return <Badge variant="outline">Inconnu</Badge>;
     }
