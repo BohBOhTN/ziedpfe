@@ -35,6 +35,8 @@ import {
 import { Search, MoreHorizontal, Calendar, Phone, Mail, MapPin, Filter, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Calendar as CalendarUI } from '@/components/ui/calendar';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data for patients
 const patients = [
@@ -147,6 +149,12 @@ const DoctorPatients = () => {
   const [selectedPatient, setSelectedPatient] = useState<typeof patients[0] | null>(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'new' | 'inactive'>('all');
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
+  const [selectedPatientForAppointment, setSelectedPatientForAppointment] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const { toast } = useToast();
   
   // Filter patients based on search term and status filter
   const filteredPatients = patients.filter(patient => {
@@ -177,6 +185,41 @@ const DoctorPatients = () => {
     setDetailsDialogOpen(true);
   };
   
+  // Open appointment modal
+  const openAppointmentModal = (patient) => {
+    setSelectedPatientForAppointment(patient);
+    setAppointmentModalOpen(true);
+  };
+
+  // Close appointment modal
+  const closeAppointmentModal = () => {
+    setAppointmentModalOpen(false);
+    setSelectedPatientForAppointment(null);
+    setSelectedDate(null);
+    setAvailableTimeSlots([]);
+    setSelectedTimeSlot(null);
+  };
+
+  // Fetch available time slots for the selected date
+  const fetchAvailableTimeSlots = (date: Date) => {
+    // Mock fetching available time slots for the selected date
+    const mockTimeSlots = [
+      '09:00 AM', '10:00 AM', '11:00 AM', '02:00 PM', '03:00 PM', '04:00 PM'
+    ];
+    setAvailableTimeSlots(mockTimeSlots);
+  };
+
+  // Add a handler for confirming the appointment
+  const handleConfirmAppointment = () => {
+    if (!selectedPatientForAppointment || !selectedDate || !selectedTimeSlot) return;
+    toast({
+      title: 'Rendez-vous ajouté',
+      description: `Rendez-vous ajouté pour ${selectedPatientForAppointment.name} le ${format(selectedDate, 'dd/MM/yyyy')} à ${selectedTimeSlot}`,
+      variant: 'success',
+    });
+    closeAppointmentModal();
+  };
+
   // Get status badge
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -342,7 +385,7 @@ const DoctorPatients = () => {
                         <DropdownMenuItem onClick={() => openDetailsDialog(patient)}>
                           Voir dossier
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openAppointmentModal(patient)}>
                           Ajouter rendez-vous
                         </DropdownMenuItem>
                         <DropdownMenuItem>
@@ -541,6 +584,60 @@ const DoctorPatients = () => {
               Modifier dossier
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Add Appointment Modal */}
+      <Dialog open={appointmentModalOpen} onOpenChange={setAppointmentModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Ajouter Rendez-vous</DialogTitle>
+            <DialogDescription>
+              Sélectionnez une date et une heure pour le rendez-vous.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            {/* Calendar for date selection */}
+            <CalendarUI
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => {
+                setSelectedDate(date);
+                setSelectedTimeSlot(null);
+                fetchAvailableTimeSlots(date);
+              }}
+            />
+            {/* Show available time slots after date selection */}
+            {selectedDate && (
+              <div className="mt-4">
+                <p className="text-sm font-medium">Heures disponibles pour {format(selectedDate, 'dd/MM/yyyy')} :</p>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {availableTimeSlots.length > 0 ? (
+                    availableTimeSlots.map((slot, index) => (
+                      <Button
+                        key={index}
+                        variant={selectedTimeSlot === slot ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setSelectedTimeSlot(slot)}
+                      >
+                        {slot}
+                      </Button>
+                    ))
+                  ) : (
+                    <span className="text-muted-foreground col-span-2">Aucun créneau disponible</span>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={closeAppointmentModal}>
+                Annuler
+              </Button>
+              <Button className="ml-2" disabled={!selectedDate || !selectedTimeSlot} onClick={handleConfirmAppointment}>
+                Confirmer
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
