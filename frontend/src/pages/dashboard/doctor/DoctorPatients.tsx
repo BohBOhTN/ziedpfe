@@ -154,6 +154,12 @@ const DoctorPatients = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [visitSummaryModalOpen, setVisitSummaryModalOpen] = useState(false);
+  const [visitSummaryPatient, setVisitSummaryPatient] = useState<typeof patients[0] | null>(null);
+  const [visitSummary, setVisitSummary] = useState('');
+  const [visitPrescription, setVisitPrescription] = useState('');
+  const [visitDiagnosis, setVisitDiagnosis] = useState('');
+  const [visitDate, setVisitDate] = useState<Date | null>(new Date());
   const { toast } = useToast();
   
   // Filter patients based on search term and status filter
@@ -243,6 +249,27 @@ const DoctorPatients = () => {
       age--;
     }
     return age;
+  };
+
+  // Handler to open the visit summary modal
+  const openVisitSummaryModal = (patient) => {
+    setVisitSummaryPatient(patient);
+    setVisitSummary('');
+    setVisitPrescription('');
+    setVisitDiagnosis('');
+    setVisitDate(new Date());
+    setVisitSummaryModalOpen(true);
+  };
+
+  // Handler to save the visit summary (replace with API call as needed)
+  const handleSaveVisitSummary = () => {
+    if (!visitSummaryPatient) return;
+    toast({
+      title: 'Résumé de visite ajouté',
+      description: `Résumé ajouté pour ${visitSummaryPatient.name}`,
+      variant: 'success',
+    });
+    setVisitSummaryModalOpen(false);
   };
 
   return (
@@ -388,13 +415,10 @@ const DoctorPatients = () => {
                         <DropdownMenuItem onClick={() => openAppointmentModal(patient)}>
                           Ajouter rendez-vous
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          Ajouter note
+                        <DropdownMenuItem onClick={() => openVisitSummaryModal(patient)}>
+                          Ajouter résumé de visite
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          Modifier informations
-                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -637,6 +661,64 @@ const DoctorPatients = () => {
                 Confirmer
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Visit Summary Modal */}
+      <Dialog open={visitSummaryModalOpen} onOpenChange={setVisitSummaryModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Ajouter résumé de visite</DialogTitle>
+            <DialogDescription>
+              Saisissez la date, le diagnostic, la prescription et le résumé de la visite du patient.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div>
+              <label className="block text-sm font-medium mb-1">Date de la visite</label>
+              <CalendarUI
+                mode="single"
+                selected={visitDate}
+                onSelect={setVisitDate}
+                className="border rounded bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Diagnostic</label>
+              <textarea
+                className="w-full border rounded p-2 min-h-[60px] bg-white text-black placeholder:text-gray-500"
+                value={visitDiagnosis}
+                onChange={e => setVisitDiagnosis(e.target.value)}
+                placeholder="Diagnostic du patient..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Prescription</label>
+              <textarea
+                className="w-full border rounded p-2 min-h-[60px] bg-white text-black placeholder:text-gray-500"
+                value={visitPrescription}
+                onChange={e => setVisitPrescription(e.target.value)}
+                placeholder="Prescription médicale..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Résumé de la visite</label>
+              <textarea
+                className="w-full border rounded p-2 min-h-[60px] bg-white text-black placeholder:text-gray-500"
+                value={visitSummary}
+                onChange={e => setVisitSummary(e.target.value)}
+                placeholder="Résumé de la visite..."
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setVisitSummaryModalOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSaveVisitSummary} disabled={!visitDiagnosis && !visitPrescription && !visitSummary}>
+              Enregistrer
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
