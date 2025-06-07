@@ -150,6 +150,26 @@ const appointmentsData = [
     notes: '',
     isNewPatient: false,
   },
+  {
+    id: '12',
+    patientName: 'Hichem Ben Salah',
+    patientPhone: '+216 24 111 222',
+    date: new Date(2025, 5, 3, 10, 0), // Future unconfirmed
+    status: 'unconfirmed',
+    reason: 'Consultation diabète',
+    notes: '',
+    isNewPatient: true,
+  },
+  {
+    id: '13',
+    patientName: 'Mouna Feki',
+    patientPhone: '+216 25 333 444',
+    date: new Date(2025, 5, 4, 9, 30), // Future unconfirmed
+    status: 'unconfirmed',
+    reason: 'Suivi grossesse',
+    notes: '',
+    isNewPatient: false,
+  },
 ];
 
 const DoctorAppointments = () => {
@@ -175,7 +195,8 @@ const DoctorAppointments = () => {
         
         // Filter by tab
         if (tab === 'upcoming') {
-          return isAfter(appointment.date, now) && appointment.status !== 'cancelled' && matchesSearch && matchesDate;
+          // Show future confirmed and all unconfirmed appointments
+          return ((isAfter(appointment.date, now) && appointment.status === 'confirmed') || appointment.status === 'unconfirmed') && matchesSearch && matchesDate;
         } else if (tab === 'past') {
           return (isBefore(appointment.date, now) || appointment.status === 'cancelled' || appointment.status === 'no-show') && matchesSearch && matchesDate;
         }
@@ -232,6 +253,8 @@ const DoctorAppointments = () => {
         return <Badge variant="outline" className="bg-destructive/20 text-destructive border-destructive">Annulé</Badge>;
       case 'no-show':
         return <Badge variant="outline" className="bg-yellow-600/20 text-yellow-600 border-yellow-600">Absent</Badge>;
+      case 'unconfirmed':
+        return <Badge variant="outline" className="bg-blue-600/20 text-blue-600 border-blue-600">À confirmer</Badge>;
       default:
         return <Badge variant="outline">Inconnu</Badge>;
     }
